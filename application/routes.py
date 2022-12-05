@@ -5,6 +5,7 @@ from sklearn.preprocessing import OneHotEncoder
 import requests
 import numpy
 import pandas as pd
+import json
 
 #decorator to access the app
 @app.route("/")
@@ -28,13 +29,15 @@ def carclassify():
     input_data = json.dumps({"buying": buying, "maint": maint, "doors": doors, "persons": persons, "lug_boot": lug_boot, "safety": safety})
 
     #url for car classification api
-    #url = "http://localhost:5000/api"
-    url = "https://dsm-car-model.herokuapp.com/api"
+    url = "http://localhost:5000/api"
+    #url = "https://dsm-car-model.herokuapp.com/api"
 
  
     #post data to url
     results =  requests.post(url, input_data)
-
+    content =results.content.decode('UTF-8')
+    content=json.loads(content)
+    print (content['Prediction'])
     #send input values and prediction result to index.html for display
-    return render_template("index.html", buying = buying, maint = maint, doors = doors, persons = persons, lug_boot = lug_boot, safety = safety, results=results.content.decode('UTF-8'))
+    return render_template("index.html", buying = buying, maint = maint, doors = doors, persons = persons, lug_boot = lug_boot, safety = safety, results=results.content)
   
